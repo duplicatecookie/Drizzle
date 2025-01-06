@@ -238,7 +238,7 @@ public sealed class RenderViewModel : ViewModelBase, ILingoRuntimeManager
 
         try
         {
-            _renderer.DoRender();
+            _renderer.DoRender(false);
         }
         catch (RenderCancelledException)
         {

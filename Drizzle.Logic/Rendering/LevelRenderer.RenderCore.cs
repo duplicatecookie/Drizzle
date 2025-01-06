@@ -20,7 +20,7 @@ public sealed partial class LevelRenderer
     private int _cameraIndex;
     private int _countCamerasDone;
 
-    public void DoRender()
+    public void DoRender(bool outputAngles)
     {
         RenderStart();
 
@@ -72,6 +72,22 @@ public sealed partial class LevelRenderer
                 imgSharp.Metadata.GetPngMetadata().TextData.Add(
                     new PngTextData("Software", PngSoftwareName, null, null));
                 imgSharp.SaveAsPng(file);
+
+                if (outputAngles)
+                {
+                    var anglePath = Path.Combine(
+                        LingoRuntime.MovieBasePath,
+                        "Levels",
+                        $"{Movie.gLoadedName}_{camIndex}_angles.txt"
+                    );
+
+                    using var angleWriter = new StreamWriter(File.Create(anglePath));
+                    angleWriter.Write(
+                        $"light angle: {1}\nlight flatness: {2}",
+                        Movie.gCameraProps.cameraangle,
+                        Movie.gLightEProps.lightangle
+                    );
+                }
 
                 _countCamerasDone += 1;
             }

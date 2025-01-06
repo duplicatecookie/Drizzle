@@ -66,6 +66,8 @@ int DoCmdRender(CommandLineArgs.VerbRender options)
         checksums = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(chkFile);
     }
 
+    var outputAngles = options.Angles;
+
     Shuffle(options.Levels, new Random());
 
     Parallel.ForEach(options.Levels, parallelOptions, s =>
@@ -83,7 +85,7 @@ int DoCmdRender(CommandLineArgs.VerbRender options)
             if (doChecksums)
                 renderer.OnScreenRenderCompleted += (cam, img) => HandleChecksum(levelName, cam, img, checksums);
 
-            renderer.DoRender();
+            renderer.DoRender(outputAngles);
         }
         catch (Exception e)
         {
