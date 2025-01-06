@@ -8,13 +8,14 @@ public sealed record CommandLineArgs(CommandLineArgs.BaseVerb Verb)
 {
     public abstract record BaseVerb;
 
-    public sealed record VerbRender(int MaxParallelism, List<string> Levels, bool Checksums, string? CompareChecksums) : BaseVerb
+    public sealed record VerbRender(int MaxParallelism, List<string> Levels, bool Checksums, string? CompareChecksums, bool Angles) : BaseVerb
     {
         public static VerbRender? ContinueParse(IEnumerator<string> enumerator)
         {
             var levels = new List<string>();
             var parallelism = 0;
             var genChecksums = false;
+            var angles = false;
             string? compareChecksums = null;
 
             while (enumerator.MoveNext())
@@ -51,6 +52,10 @@ public sealed record CommandLineArgs(CommandLineArgs.BaseVerb Verb)
                     PrintVerbHelp();
                     return null;
                 }
+                else if (arg == "--angles")
+                {
+                    angles = true;
+                }
                 else
                 {
                     levels.Add(arg);
@@ -63,7 +68,7 @@ public sealed record CommandLineArgs(CommandLineArgs.BaseVerb Verb)
                 return null;
             }
 
-            return new VerbRender(parallelism, levels, genChecksums, compareChecksums);
+            return new VerbRender(parallelism, levels, genChecksums, compareChecksums, angles);
         }
 
         private static void PrintVerbHelp()
@@ -78,6 +83,7 @@ Options:
   --compare-checksums <file>  Checksums file to compare against.
                               The checksum of the generated image will be looked up and compared,
                               and an error will be raised if it does not match.
+  --angles                    Output camera and light angle information.
   --help                      Print help then exit.
 ");
         }
